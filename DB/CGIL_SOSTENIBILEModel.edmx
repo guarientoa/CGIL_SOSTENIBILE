@@ -1,0 +1,446 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CGIL_SOSTENIBILEModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Azioni">
+          <Key>
+            <PropertyRef Name="IdAzione" />
+          </Key>
+          <Property Name="IdAzione" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Azione" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="AzioniStrutture">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdAzione" Type="int" />
+          <Property Name="IdStruttura" Type="int" />
+          <Property Name="Mese" Type="int" />
+          <Property Name="Anno" Type="int" />
+          <Property Name="Grandezza" Type="nvarchar" MaxLength="50" />
+          <Property Name="Valore" Type="float" />
+          <Property Name="DataAggiornamento" Type="datetime" />
+          <Property Name="DataInserimento" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ConversioneGrandezze">
+          <Key>
+            <PropertyRef Name="GrandezzaOrigine" />
+            <PropertyRef Name="GrandezzaDestinazione" />
+          </Key>
+          <Property Name="GrandezzaOrigine" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GrandezzaDestinazione" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Coefficiente" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Grandezze">
+          <Key>
+            <PropertyRef Name="Grandezza" />
+          </Key>
+          <Property Name="Grandezza" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Descrizione" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="Strutture">
+          <Key>
+            <PropertyRef Name="IdStruttura" />
+          </Key>
+          <Property Name="IdStruttura" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Struttura" Type="nvarchar" MaxLength="50" />
+          <Property Name="Regione" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <!--Errori trovati durante la generazione:
+avviso 6002: Nessuna chiave primaria definita per la tabella/visualizzazione 'CGIL_SOSTENIBILE.dbo.Classifica'. La chiave è stata dedotta e la definizione è stata creata come tabella/visualizzazione di sola lettura.-->
+        <EntityType Name="Classifica">
+          <Key>
+            <PropertyRef Name="GrandezzaDestinazione" />
+            <PropertyRef Name="NumeroClassifica" />
+          </Key>
+          <Property Name="NumeroClassifica" Type="bigint" Nullable="false" />
+          <Property Name="Struttura" Type="nvarchar" MaxLength="50" />
+          <Property Name="Valore" Type="float" />
+          <Property Name="Grandezza" Type="nvarchar" MaxLength="50" />
+          <Property Name="ValoreEquivalente" Type="float" />
+          <Property Name="GrandezzaDestinazione" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AzioniStrutture_Azioni">
+          <End Role="Azioni" Type="Self.Azioni" Multiplicity="0..1" />
+          <End Role="AzioniStrutture" Type="Self.AzioniStrutture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Azioni">
+              <PropertyRef Name="IdAzione" />
+            </Principal>
+            <Dependent Role="AzioniStrutture">
+              <PropertyRef Name="IdAzione" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AzioniStrutture_Grandezze">
+          <End Role="Grandezze" Type="Self.Grandezze" Multiplicity="0..1" />
+          <End Role="AzioniStrutture" Type="Self.AzioniStrutture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grandezze">
+              <PropertyRef Name="Grandezza" />
+            </Principal>
+            <Dependent Role="AzioniStrutture">
+              <PropertyRef Name="Grandezza" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AzioniStrutture_Strutture">
+          <End Role="Strutture" Type="Self.Strutture" Multiplicity="0..1" />
+          <End Role="AzioniStrutture" Type="Self.AzioniStrutture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Strutture">
+              <PropertyRef Name="IdStruttura" />
+            </Principal>
+            <Dependent Role="AzioniStrutture">
+              <PropertyRef Name="IdStruttura" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConversioneGrandezze_Grandezze">
+          <End Role="Grandezze" Type="Self.Grandezze" Multiplicity="1" />
+          <End Role="ConversioneGrandezze" Type="Self.ConversioneGrandezze" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grandezze">
+              <PropertyRef Name="Grandezza" />
+            </Principal>
+            <Dependent Role="ConversioneGrandezze">
+              <PropertyRef Name="GrandezzaOrigine" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConversioneGrandezze_Grandezze1">
+          <End Role="Grandezze" Type="Self.Grandezze" Multiplicity="1" />
+          <End Role="ConversioneGrandezze" Type="Self.ConversioneGrandezze" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grandezze">
+              <PropertyRef Name="Grandezza" />
+            </Principal>
+            <Dependent Role="ConversioneGrandezze">
+              <PropertyRef Name="GrandezzaDestinazione" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CGIL_SOSTENIBILEModelStoreContainer">
+          <EntitySet Name="Azioni" EntityType="Self.Azioni" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AzioniStrutture" EntityType="Self.AzioniStrutture" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ConversioneGrandezze" EntityType="Self.ConversioneGrandezze" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Grandezze" EntityType="Self.Grandezze" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Strutture" EntityType="Self.Strutture" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Classifica" EntityType="Self.Classifica" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Classifica].[NumeroClassifica] AS [NumeroClassifica], 
+    [Classifica].[Struttura] AS [Struttura], 
+    [Classifica].[Valore] AS [Valore], 
+    [Classifica].[Grandezza] AS [Grandezza], 
+    [Classifica].[ValoreEquivalente] AS [ValoreEquivalente], 
+    [Classifica].[GrandezzaDestinazione] AS [GrandezzaDestinazione]
+    FROM [dbo].[Classifica] AS [Classifica]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_AzioniStrutture_Azioni" Association="Self.FK_AzioniStrutture_Azioni">
+            <End Role="Azioni" EntitySet="Azioni" />
+            <End Role="AzioniStrutture" EntitySet="AzioniStrutture" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AzioniStrutture_Grandezze" Association="Self.FK_AzioniStrutture_Grandezze">
+            <End Role="Grandezze" EntitySet="Grandezze" />
+            <End Role="AzioniStrutture" EntitySet="AzioniStrutture" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AzioniStrutture_Strutture" Association="Self.FK_AzioniStrutture_Strutture">
+            <End Role="Strutture" EntitySet="Strutture" />
+            <End Role="AzioniStrutture" EntitySet="AzioniStrutture" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConversioneGrandezze_Grandezze" Association="Self.FK_ConversioneGrandezze_Grandezze">
+            <End Role="Grandezze" EntitySet="Grandezze" />
+            <End Role="ConversioneGrandezze" EntitySet="ConversioneGrandezze" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConversioneGrandezze_Grandezze1" Association="Self.FK_ConversioneGrandezze_Grandezze1">
+            <End Role="Grandezze" EntitySet="Grandezze" />
+            <End Role="ConversioneGrandezze" EntitySet="ConversioneGrandezze" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CGIL_SOSTENIBILEModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Azioni">
+          <Key>
+            <PropertyRef Name="IdAzione" />
+          </Key>
+          <Property Name="IdAzione" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Azione" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AzioniStruttures" Relationship="Self.FK_AzioniStrutture_Azioni" FromRole="Azioni" ToRole="AzioniStrutture" />
+        </EntityType>
+        <EntityType Name="AzioniStrutture">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdAzione" Type="Int32" />
+          <Property Name="IdStruttura" Type="Int32" />
+          <Property Name="Mese" Type="Int32" />
+          <Property Name="Anno" Type="Int32" />
+          <Property Name="Grandezza" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Valore" Type="Double" />
+          <Property Name="DataAggiornamento" Type="DateTime" Precision="3" />
+          <Property Name="DataInserimento" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Azioni" Relationship="Self.FK_AzioniStrutture_Azioni" FromRole="AzioniStrutture" ToRole="Azioni" />
+          <NavigationProperty Name="Grandezze" Relationship="Self.FK_AzioniStrutture_Grandezze" FromRole="AzioniStrutture" ToRole="Grandezze" />
+          <NavigationProperty Name="Strutture" Relationship="Self.FK_AzioniStrutture_Strutture" FromRole="AzioniStrutture" ToRole="Strutture" />
+        </EntityType>
+        <EntityType Name="ConversioneGrandezze">
+          <Key>
+            <PropertyRef Name="GrandezzaOrigine" />
+            <PropertyRef Name="GrandezzaDestinazione" />
+          </Key>
+          <Property Name="GrandezzaOrigine" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GrandezzaDestinazione" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Coefficiente" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Grandezze" Relationship="Self.FK_ConversioneGrandezze_Grandezze" FromRole="ConversioneGrandezze" ToRole="Grandezze" />
+          <NavigationProperty Name="Grandezze1" Relationship="Self.FK_ConversioneGrandezze_Grandezze1" FromRole="ConversioneGrandezze" ToRole="Grandezze" />
+        </EntityType>
+        <EntityType Name="Grandezze">
+          <Key>
+            <PropertyRef Name="Grandezza" />
+          </Key>
+          <Property Name="Grandezza" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Descrizione" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AzioniStruttures" Relationship="Self.FK_AzioniStrutture_Grandezze" FromRole="Grandezze" ToRole="AzioniStrutture" />
+          <NavigationProperty Name="ConversioneGrandezzes" Relationship="Self.FK_ConversioneGrandezze_Grandezze" FromRole="Grandezze" ToRole="ConversioneGrandezze" />
+          <NavigationProperty Name="ConversioneGrandezzes1" Relationship="Self.FK_ConversioneGrandezze_Grandezze1" FromRole="Grandezze" ToRole="ConversioneGrandezze" />
+        </EntityType>
+        <EntityType Name="Strutture">
+          <Key>
+            <PropertyRef Name="IdStruttura" />
+          </Key>
+          <Property Name="IdStruttura" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Struttura" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Regione" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AzioniStruttures" Relationship="Self.FK_AzioniStrutture_Strutture" FromRole="Strutture" ToRole="AzioniStrutture" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <Association Name="FK_AzioniStrutture_Azioni">
+          <End Role="Azioni" Type="Self.Azioni" Multiplicity="0..1" />
+          <End Role="AzioniStrutture" Type="Self.AzioniStrutture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Azioni">
+              <PropertyRef Name="IdAzione" />
+            </Principal>
+            <Dependent Role="AzioniStrutture">
+              <PropertyRef Name="IdAzione" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AzioniStrutture_Grandezze">
+          <End Role="Grandezze" Type="Self.Grandezze" Multiplicity="0..1" />
+          <End Role="AzioniStrutture" Type="Self.AzioniStrutture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grandezze">
+              <PropertyRef Name="Grandezza" />
+            </Principal>
+            <Dependent Role="AzioniStrutture">
+              <PropertyRef Name="Grandezza" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AzioniStrutture_Strutture">
+          <End Role="Strutture" Type="Self.Strutture" Multiplicity="0..1" />
+          <End Role="AzioniStrutture" Type="Self.AzioniStrutture" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Strutture">
+              <PropertyRef Name="IdStruttura" />
+            </Principal>
+            <Dependent Role="AzioniStrutture">
+              <PropertyRef Name="IdStruttura" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConversioneGrandezze_Grandezze">
+          <End Role="Grandezze" Type="Self.Grandezze" Multiplicity="1" />
+          <End Role="ConversioneGrandezze" Type="Self.ConversioneGrandezze" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grandezze">
+              <PropertyRef Name="Grandezza" />
+            </Principal>
+            <Dependent Role="ConversioneGrandezze">
+              <PropertyRef Name="GrandezzaOrigine" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ConversioneGrandezze_Grandezze1">
+          <End Role="Grandezze" Type="Self.Grandezze" Multiplicity="1" />
+          <End Role="ConversioneGrandezze" Type="Self.ConversioneGrandezze" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Grandezze">
+              <PropertyRef Name="Grandezza" />
+            </Principal>
+            <Dependent Role="ConversioneGrandezze">
+              <PropertyRef Name="GrandezzaDestinazione" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CGIL_SOSTENIBILEContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Azionis" EntityType="Self.Azioni" />
+          <EntitySet Name="AzioniStruttures" EntityType="Self.AzioniStrutture" />
+          <EntitySet Name="ConversioneGrandezzes" EntityType="Self.ConversioneGrandezze" />
+          <EntitySet Name="Grandezzes" EntityType="Self.Grandezze" />
+          <EntitySet Name="Struttures" EntityType="Self.Strutture" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <AssociationSet Name="FK_AzioniStrutture_Azioni" Association="Self.FK_AzioniStrutture_Azioni">
+            <End Role="Azioni" EntitySet="Azionis" />
+            <End Role="AzioniStrutture" EntitySet="AzioniStruttures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AzioniStrutture_Grandezze" Association="Self.FK_AzioniStrutture_Grandezze">
+            <End Role="Grandezze" EntitySet="Grandezzes" />
+            <End Role="AzioniStrutture" EntitySet="AzioniStruttures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AzioniStrutture_Strutture" Association="Self.FK_AzioniStrutture_Strutture">
+            <End Role="Strutture" EntitySet="Struttures" />
+            <End Role="AzioniStrutture" EntitySet="AzioniStruttures" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConversioneGrandezze_Grandezze" Association="Self.FK_ConversioneGrandezze_Grandezze">
+            <End Role="Grandezze" EntitySet="Grandezzes" />
+            <End Role="ConversioneGrandezze" EntitySet="ConversioneGrandezzes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ConversioneGrandezze_Grandezze1" Association="Self.FK_ConversioneGrandezze_Grandezze1">
+            <End Role="Grandezze" EntitySet="Grandezzes" />
+            <End Role="ConversioneGrandezze" EntitySet="ConversioneGrandezzes" />
+          </AssociationSet>
+          <EntitySet Name="Classificas" EntityType="CGIL_SOSTENIBILEModel.Classifica" />
+        </EntityContainer>
+        <EntityType Name="Classifica">
+          <Key>
+            <PropertyRef Name="GrandezzaDestinazione" />
+            <PropertyRef Name="NumeroClassifica" />
+          </Key>
+          <Property Name="NumeroClassifica" Type="Int64" Nullable="false" />
+          <Property Name="Struttura" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Valore" Type="Double" />
+          <Property Name="Grandezza" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ValoreEquivalente" Type="Double" />
+          <Property Name="GrandezzaDestinazione" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CGIL_SOSTENIBILEModelStoreContainer" CdmEntityContainer="CGIL_SOSTENIBILEContext">
+          <EntitySetMapping Name="Azionis">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.Azioni">
+              <MappingFragment StoreEntitySet="Azioni">
+                <ScalarProperty Name="IdAzione" ColumnName="IdAzione" />
+                <ScalarProperty Name="Azione" ColumnName="Azione" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AzioniStruttures">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.AzioniStrutture">
+              <MappingFragment StoreEntitySet="AzioniStrutture">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="IdAzione" ColumnName="IdAzione" />
+                <ScalarProperty Name="IdStruttura" ColumnName="IdStruttura" />
+                <ScalarProperty Name="Mese" ColumnName="Mese" />
+                <ScalarProperty Name="Anno" ColumnName="Anno" />
+                <ScalarProperty Name="Grandezza" ColumnName="Grandezza" />
+                <ScalarProperty Name="Valore" ColumnName="Valore" />
+                <ScalarProperty Name="DataAggiornamento" ColumnName="DataAggiornamento" />
+                <ScalarProperty Name="DataInserimento" ColumnName="DataInserimento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ConversioneGrandezzes">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.ConversioneGrandezze">
+              <MappingFragment StoreEntitySet="ConversioneGrandezze">
+                <ScalarProperty Name="GrandezzaOrigine" ColumnName="GrandezzaOrigine" />
+                <ScalarProperty Name="GrandezzaDestinazione" ColumnName="GrandezzaDestinazione" />
+                <ScalarProperty Name="Coefficiente" ColumnName="Coefficiente" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Grandezzes">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.Grandezze">
+              <MappingFragment StoreEntitySet="Grandezze">
+                <ScalarProperty Name="Grandezza" ColumnName="Grandezza" />
+                <ScalarProperty Name="Descrizione" ColumnName="Descrizione" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Struttures">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.Strutture">
+              <MappingFragment StoreEntitySet="Strutture">
+                <ScalarProperty Name="IdStruttura" ColumnName="IdStruttura" />
+                <ScalarProperty Name="Struttura" ColumnName="Struttura" />
+                <ScalarProperty Name="Regione" ColumnName="Regione" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Classificas">
+            <EntityTypeMapping TypeName="CGIL_SOSTENIBILEModel.Classifica">
+              <MappingFragment StoreEntitySet="Classifica">
+                <ScalarProperty Name="NumeroClassifica" ColumnName="NumeroClassifica" />
+                <ScalarProperty Name="GrandezzaDestinazione" ColumnName="GrandezzaDestinazione" />
+                <ScalarProperty Name="ValoreEquivalente" ColumnName="ValoreEquivalente" />
+                <ScalarProperty Name="Grandezza" ColumnName="Grandezza" />
+                <ScalarProperty Name="Valore" ColumnName="Valore" />
+                <ScalarProperty Name="Struttura" ColumnName="Struttura" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Nessuno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ;>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="Scripts/jquery-3.6.0.min.js"></script>
+    <script src="Scripts/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <br />
+        <img src="Images/LogoPiccolo.png" style="display: block; margin-left: auto; margin-right: auto;" />
+        <br />
+        <table>
+            <tr>
+                <th><a href="info.html"><img src="Images/Indietro.png" style="display: block; margin-left: 0px"></a></th>
+                <th><a href="info.html" style="text-decoration: none; color:black">INDIETRO</a></th>
+            </tr>
+        </table>
+        <div class="row">
+            <div class="col-sm-12" style="display: block; margin-left: auto; margin-right: auto; background-color: red; color: white; padding: 0">
+                <h1 style="text-align: center; font-weight: bold;">CLASSIFICA</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12" style="display: block; margin-left: 0; margin-right: 0; padding: 0">
+                <table id="classificaTable" class="table table-condensed table-striped">
+                </table>
+            </div>
+        </div>
+        <br />
+        <br /><a href="info.html">
+            <img src="Images/scoprilo.png" style="display: block; margin-left: auto; margin-right: auto;" />
+        </a>
+        <br />
+        <div class="form-group">
+
+         <input type="text" class="form-label" style="border:none"   id="Struttura" />
+        </div>
+    </div>
+  <script>
+		function CaricaClassifica() {
+			$.ajax({
+				url: '/api/Classifica/',
+				type: 'GET',
+				dataType: 'json',
+                success: function (classifica) {
+                    ListaClassificaSuccess(classifica);
+				},
+				error: function (request, message, error) {
+					handleException(request, message, error);
+				}
+			});
+    }
+
+      function ListaClassificaSuccess(classifica) {
+          $.each(classifica, function (index, classifica) {
+              classificaAddRow(classifica);
+			});
+    }
+
+      function classificaAddRow(classifica) {
+          if ($("#classificaTable tbody").length == 0) {
+              $("#classificaTable").append("<tbody></tbody>");
+			}
+          $("#classificaTable tbody").append(
+              BuildClassificaTableRow(classifica));
+    }
+
+      function BuildClassificaTableRow(classifica) {
+			var ret =
+				"<tr><" +
+                "<td><h3 style=font-weight:bold;>" + classifica.NumeroClassifica + "</h3></td>" +
+                "<td><h3 style=color:red;font-weight:bold;>" + classifica.Struttura + "</h3></td>" +
+                "<td><h3>" + classifica.Valore + " " + classifica.Grandezza + "</h3></td>" +
+                "<td><h3>" + classifica.ValoreEquivalente + " " + classifica.GrandezzaDestinazione + "</h3></td>" +
+                "<td><button type='button' onclick='dettaglioGet(this);' class='btn btn-default' " +
+                "data-id='" + classifica.NumeroClassifica + "'>" +
+                "<img src=Images/dettaglio.png style=height:20></button></td></tr>";
+			return ret;
+		}
+
+		function handleException(request, message, error) {
+			var msg = "";
+			msg += "Code: " + request.status + "\n";
+			msg += "Text: " + request.statusText + "\n";
+			if (request.responseJSON != null) {
+				msg += "Message" + request.responseJSON.Message + "\n";
+			}
+			alert(msg);
+		}
+      function dettaglioGet(ctl) {
+          var id = $(ctl).data("id");
+
+          $("#NumeroClassifica").val(id);
+          $.ajax({
+              url: "/api/Classifica/" + id,
+              type: 'GET',
+              dataType: 'json',
+              success: function (NumeroClassifica) {
+                  ClassificaToFields(NumeroClassifica);
+              },
+              error: function (request, message, error) {
+                  handleException(request, message, error);
+              }
+          });
+      }
+      function ClassificaToFields(dettaglio) {
+          $("#Struttura").val(dettaglio.Struttura);
+      }
+		$(document).ready(function () {
+            CaricaClassifica();
+		});
+  </script>
+</body>
+</html>

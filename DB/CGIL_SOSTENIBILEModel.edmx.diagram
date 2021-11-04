@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="07b6dfa7751949cdb9be1b00ba97fa3b" Name="Diagram1">
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.Azioni" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.AzioniStrutture" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.ConversioneGrandezze" Width="1.5" PointX="3" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.Grandezze" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.Strutture" Width="1.5" PointX="0.75" PointY="7.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.sysdiagram" Width="1.5" PointX="5.75" PointY="1.375" IsExpanded="true" />
+        <AssociationConnector Association="CGIL_SOSTENIBILEModel.FK_AzioniStrutture_Azioni" ManuallyRouted="false" />
+        <AssociationConnector Association="CGIL_SOSTENIBILEModel.FK_AzioniStrutture_Grandezze" ManuallyRouted="false" />
+        <AssociationConnector Association="CGIL_SOSTENIBILEModel.FK_AzioniStrutture_Strutture" ManuallyRouted="false" />
+        <AssociationConnector Association="CGIL_SOSTENIBILEModel.FK_ConversioneGrandezze_Grandezze" ManuallyRouted="false" />
+        <AssociationConnector Association="CGIL_SOSTENIBILEModel.FK_ConversioneGrandezze_Grandezze1" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CGIL_SOSTENIBILEModel.Classifica" Width="1.5" PointX="5.375" PointY="4.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
